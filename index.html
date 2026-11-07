@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080808">
+<title>YASSER MOVIE SITE</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#080808;color:#fff;font-family:Arial,sans-serif}
+button,input{font:inherit}
+button{cursor:pointer}
+.hidden{display:none!important}
+
+/* WELCOME */
+#welcome{
+ position:fixed;inset:0;z-index:1000;
+ display:flex;align-items:center;justify-content:center;
+ padding:22px;background:
+ linear-gradient(#000b,#000e),
+ url("https://files.catbox.moe/po3bwx.jpg") center/cover;
+}
+.welcome-box{
+ width:100%;max-width:420px;text-align:center;
+ padding:30px 22px;background:#101010eF;
+ border:1px solid #ff2020;border-radius:18px;
+ box-shadow:0 0 30px #ff000044;
+}
+.profile{
+ width:110px;height:110px;border-radius:50%;
+ object-fit:cover;border:3px solid red;margin-bottom:18px;
+}
+.welcome-box h1{font-size:25px;color:#ff2929;margin-bottom:12px}
+.welcome-box p{color:#ccc;margin-bottom:20px}
+.welcome-box input{
+ width:100%;padding:14px;border-radius:8px;
+ border:1px solid #555;background:#080808;color:white;
+ margin-bottom:12px;outline:none;
+}
+.primary{
+ background:#e50914;color:white;border:0;
+ padding:13px 20px;border-radius:8px;font-weight:bold;
+ width:100%;
+}
+.primary:hover{background:#b9000a}
+
+/* HEADER */
+header{
+ position:sticky;top:0;z-index:50;
+ background:#101010;border-bottom:1px solid #292929;
+ padding:14px 4%;display:flex;align-items:center;
+ justify-content:space-between;gap:12px;
+}
+.brand{font-size:19px;font-weight:900;color:#ff2929}
+.brand span{color:white}
+.music-btn{
+ background:#242424;color:white;border:1px solid #555;
+ padding:9px 12px;border-radius:8px;
+}
+
+/* NAV */
+nav{
+ display:flex;gap:9px;overflow-x:auto;
+ padding:13px 4%;background:#111;
+}
+nav button{
+ white-space:nowrap;background:#222;color:white;
+ border:1px solid #393939;padding:10px 14px;
+ border-radius:20px;
+}
+nav button.active{background:#e50914;border-color:#e50914}
+
+/* GENERAL */
+main{padding:18px 4%;max-width:1400px;margin:auto}
+.section{margin-bottom:32px}
+.section h2{font-size:21px;margin-bottom:15px}
+.section h2 span{color:#ff2929}
+.search{
+ width:100%;padding:13px;background:#171717;
+ border:1px solid #444;color:white;border-radius:9px;
+ margin:5px 0 20px;outline:none;
+}
+.movie-grid{
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+ gap:14px;
+}
+.movie-card{
+ background:#151515;border:1px solid #292929;
+ border-radius:10px;overflow:hidden;cursor:pointer;
+ transition:.2s;
+}
+.movie-card:hover{border-color:red;transform:translateY(-3px)}
+.movie-card img{
+ width:100%;aspect-ratio:2/3;object-fit:cover;
+ background:#222;display:block;
+}
+.movie-info{padding:10px}
+.movie-info h3{font-size:14px;margin-bottom:7px}
+.movie-info p{font-size:12px;color:#bbb}
+.rating{color:#ffc107!important;margin-top:5px}
+.empty{color:#aaa;padding:15px}
+
+/* TRENDING */
+.trend-box{
+ position:relative;min-height:230px;overflow:hidden;
+ border-radius:14px;background:#191919;
+ border:1px solid #333;
+}
+.trend-slide{
+ display:none;position:relative;min-height:230px;
+ padding:25px;align-items:flex-end;
+ background-size:cover;background-position:center;
+}
+.trend-slide.active{display:flex}
+.trend-overlay{
+ position:absolute;inset:0;
+ background:linear-gradient(transparent,#000e);
+}
+.trend-content{position:relative;z-index:1}
+.trend-content h3{font-size:23px;margin-bottom:8px}
+.trend-content p{font-size:13px;color:#ddd;margin-bottom:12px}
+.trend-content button{
+ background:#e50914;color:white;border:0;
+ padding:10px 16px;border-radius:7px;font-weight:bold;
+}
+
+/* LIVE TV */
+.live-grid{
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+ gap:12px;
+}
+.live-card{
+ background:#151515;color:white;border:1px solid #444;
+ border-radius:12px;padding:14px 8px;
+ display:flex;flex-direction:column;align-items:center;
+ justify-content:center;gap:9px;min-height:125px;
+}
+.live-card.selected{border:2px solid red;background:#260909}
+.logo-wrap{
+ width:78px;height:65px;display:grid;
+ place-items:center;background:#fff;border-radius:8px;
+ padding:5px;
+}
+.logo-wrap img{width:100%;height:100%;object-fit:contain}
+.logo-fallback{
+ display:none;color:#111;font-weight:900;
+ font-size:13px;text-align:center;
+}
+.live-card strong{font-size:13px}
+.live-player{
+ margin-top:15px;background:#151515;
+ border:1px solid #333;border-radius:12px;padding:12px;
+}
+.live-player iframe{
+ width:100%;aspect-ratio:16/9;border:0;
+ background:#000;border-radius:8px;
+}
+.live-player p{font-size:12px;color:#bbb;margin:10px 0}
+.live-player a{color:#ff4444}
+
+/* DETAILS */
+.modal{
+ position:fixed;inset:0;z-index:500;
+ background:#000e;display:none;overflow-y:auto;
+ padding:25px 15px;
+}
+.modal.show{display:block}
+.modal-box{
+ max-width:650px;margin:20px auto;
+ background:#151515;border:1px solid #444;
+ border-radius:14px;overflow:hidden;
+}
+.modal-top{display:flex;justify-content:flex-end;padding:10px}
+.close{
+ background:#e50914;color:white;border:0;
+ border-radius:7px;padding:8px 13px;
+}
+.details-body{padding:18px}
+.details-body img{
+ width:125px;border-radius:8px;float:left;
+ margin:0 15px 12px 0;
+}
+.details-body h2{margin-bottom:10px}
+.details-body p{color:#ccc;line-height:1.5;margin:9px 0}
+.detail-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:15px}
+.detail-actions button,.detail-actions a{
+ padding:11px 14px;border:0;border-radius:7px;
+ background:#e50914;color:white;text-decoration:none;
+}
+.detail-actions .secondary{background:#333}
+
+/* FOOTER */
+footer{
+ text-align:center;padding:25px 15px;
+ background:#111;border-top:1px solid #333;
+ color:#aaa;font-size:13px;line-height:2;
+}
+footer a{color:#ff3939;text-decoration:none}
+.loading{color:#aaa;padding:20px;text-align:center}
+
+@media(min-width:650px){
+ .movie-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+ .trend-slide,.trend-box{min-height:330px}
+ .trend-content h3{font-size:30px}
+}
+@media(min-width:1000px){
+ .movie-grid{grid-template-columns:repeat(6,minmax(0,1fr))}
+}
+</style>
+</head>
+
+<body>
+
+<!-- WELCOME PAGE -->
+<div id="welcome">
+ <div class="welcome-box">
+  <img class="profile"
+   src="https://files.catbox.moe/po3bwx.jpg"
+   alt="Yasser Profile">
+  <h1>WELCOME TO YASSER SITE</h1>
+  <p>Welcome to YASSER MOVIE SITE</p>
+  <input id="phoneInput" type="tel" placeholder="Enter your phone number">
+  <button class="primary" onclick="enterSite()">ENTER SITE</button>
+  <p style="font-size:11px;margin-top:15px;margin-bottom:0">
+   POWERED BY YASSER TECH SOLUTION
+  </p>
+ </div>
+</div>
+
+<!-- MUSIC -->
+<audio id="backgroundMusic" loop preload="auto">
+ <source src="https://files.catbox.moe/y1yt0e.mp3" type="audio/mpeg">
+</audio>
+
+<header>
+ <div class="brand">YASSER <span>MOVIE SITE</span></div>
+ <button class="music-btn" onclick="toggleMusic()" id="musicButton">♫ MUSIC ON</button>
+</header>
+
+<nav>
+ <button class="active" onclick="showSection('movies',this)">MOVIES</button>
+ <button onclick="showSection('live',this)">LIVE TV</button>
+ <button onclick="loadCategory('popular','movie')">POPULAR</button>
+ <button onclick="loadCategory('top_rated','movie')">TOP RATED</button>
+ <button onclick="loadCategory('now_playing','movie')">NOW PLAYING</button>
+ <button onclick="loadCategory('popular','tv')">TV SERIES</button>
+</nav>
+
+<main>
+
+<!-- MOVIE AREA -->
+<div id="moviesSection">
+
+ <section class="section">
+  <h2>🔥 MOVIES <span>ON TREND</span></h2>
+  <div class="trend-box" id="trendBox">
+   <div class="loading">Loading trending movies...</div>
+  </div>
+ </section>
+
+ <section class="section">
+  <h2>🔎 SEARCH <span>MOVIES</span></h2>
+  <input class="search" id="searchInput"
+   placeholder="Search movies or TV series..."
+   oninput="searchMovies()">
+ </section>
+
+ <section class="section">
+  <h2 id="categoryTitle">🎬 POPULAR MOVIES</h2>
+  <div id="movieGrid" class="movie-grid">
+   <div class="loading">Loading movies...</div>
+  </div>
+ </section>
+
+</div>
+
+<!-- LIVE TV AREA -->
+<div id="liveSection" class="hidden">
+
+ <section class="section">
+  <h2>📺 <span>LIVE TV</span> CHANNELS</h2>
+  <p style="color:#aaa;font-size:13px;margin-bottom:15px">
+   Select a channel to watch its available official live stream.
+  </p>
+
+  <div class="live-grid">
+
+   <button class="live-card" onclick="playLive('aljazeera',this)">
+    <span class="logo-wrap">
+     <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Aljazeera_eng.svg"
+      alt="" onerror="logoFallback(this)">
+     <span class="logo-fallback">AL JAZEERA</span>
+    </span>
+    <strong>AL JAZEERA</strong>
+   </button>
+
+   <button class="live-card" onclick="playLive('tbc',this)">
+    <span class="logo-wrap">
+     <img src="https://www.tbc.go.tz/favicon.ico"
+      alt="" onerror="logoFallback(this)">
+     <span class="logo-fallback">TBC</span>
+    </span>
+    <strong>TBC TANZANIA</strong>
+   </button>
+
+   <button class="live-card" onclick="playLive('france24',this)">
+    <span class="logo-wrap">
+     <img src="https://commons.wikimedia.org/wiki/Special:FilePath/France_24_logo.svg"
+      alt="" onerror="logoFallback(this)">
+     <span class="logo-fallback">FRANCE 24</span>
+    </span>
+    <strong>FRANCE 24</strong>
+   </button>
+
+   <button class="live-card" onclick="playLive('dw',this)">
+    <span class="logo-wrap">
+     <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Deutsche_Welle_Logo.svg"
+      alt="" onerror="logoFallback(this)">
+     <span class="logo-fallback">DW NEWS</span>
+    </span>
+    <strong>DW NEWS</strong>
+   </button>
+
+  </div>
+
+  <div class="live-player" id="livePlayer">
+   <p>Select a TV channel above.</p>
+  </div>
+ </section>
+
+</div>
+</main>
+
+<!-- MOVIE DETAILS MODAL -->
+<div class="modal" id="detailsModal" onclick="modalBackgroundClose(event)">
+ <div class="modal-box">
+  <div class="modal-top">
+   <button class="close" onclick="closeDetails()">✕ CLOSE</button>
+  </div>
+  <div class="details-body" id="detailsBody"></div>
+ </div>
+</div>
+
+<footer>
+ <strong style="color:#ff2929">YASSER MOVIE SITE</strong><br>
+ Powered by YASSER TECH SOLUTION<br>
+ Contact Owner:
+ <a href="https://wa.me/255793785960">+255 793 785 960</a><br>
+ <a href="https://whatsapp.com/channel/0029VbD1QcaGk1FkH9XpvD3X"
+ target="_blank">JOIN OUR WHATSAPP CHANNEL</a><br>
+ © 2026 YASSER TECH SOLUTION. All Rights Reserved.
+</footer>
+
+<script>
+/* MUSIC */
+const music = document.getElementById("backgroundMusic");
+let musicPlaying = false;
+
+function enterSite(){
+ document.getElementById("welcome").classList.add("hidden");
+ music.play().then(()=>{
+  musicPlaying=true;
+  document.getElementById("musicButton").textContent="♫ MUSIC OFF";
+ }).catch(()=>{
+  musicPlaying=false;
+  document.getElementById("musicButton").textContent="♫ PLAY MUSIC";
+ });
+}
+
+function toggleMusic(){
+ if(musicPlaying){
+  music.pause();
+  musicPlaying=false;
+  document.getElementById("musicButton").textContent="♫ MUSIC ON";
+ }else{
+  music.play().then(()=>{
+   musicPlaying=true;
+   document.getElementById("musicButton").textContent="♫ MUSIC OFF";
+  }).catch(()=>{
+   alert("Bonyeza tena PLAY MUSIC ili kuanza muziki.");
+  });
+ }
+}
+
+/* TMDB API */
+async function api(path){
+ const response=await fetch("/api/movies?path="+encodeURIComponent(path));
+ if(!response.ok) throw new Error("API request failed");
+ return await response.json();
+}
+
+let currentMovies=[];
+let currentType="movie";
+let trendMovies=[];
+let trendIndex=0;
+let trendTimer=null;
+
+function escapeHTML(value){
+ return String(value??"").replace(/[&<>"']/g,char=>({
+  "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+ }[char]));
+}
+
+function poster(path){
+ return path
+  ? "https://image.tmdb.org/t/p/w500"+path
+  : "https://placehold.co/500x750/171717/ffffff?text=No+Poster";
+}
+
+/* CATEGORY */
+async function loadCategory(category,type="movie"){
+ currentType=type;
+ const grid=document.getElementById("movieGrid");
+ const title=document.getElementById("categoryTitle");
+
+ const names={
+  popular:"POPULAR",
+  top_rated:"TOP RATED",
+  now_playing:"NOW PLAYING"
+ };
+
+ title.textContent=(type==="tv"?"📺 TV SERIES":"🎬 "+(names[category]||"MOVIES"));
+ grid.innerHTML='<div class="loading">Loading...</div>';
+
+ try{
+  const data=await api("/"+type+"/"+category+"?language=en-US&page=1");
+  currentMovies=data.results||[];
+  displayMovies(currentMovies,type);
+ }catch(error){
+  grid.innerHTML='<p class="empty">Failed to load movies. Check API setup.</p>';
+ }
+}
+
+function displayMovies(items,type=currentType){
+ const grid=document.getElementById("movieGrid");
+ if(!items.length){
+  grid.innerHTML='<p class="empty">No movies found.</p>';
+  return;
+ }
+
+ grid.innerHTML=items.map(movie=>{
+  const name=movie.title||movie.name||"Untitled";
+  const date=movie.release_date||movie.first_air_date||"";
+  const year=date?date.slice(0,4):"N/A";
+  return `
+   <div class="movie-card"
+    onclick="openDetails(${Number(movie.id)},'${type}')">
+    <img src="${poster(movie.poster_path)}"
+     alt="${escapeHTML(name)}" loading="lazy">
+    <div class="movie-info">
+     <h3>${escapeHTML(name)}</h3>
+     <p>${year}</p>
+     <p class="rating">⭐ ${Number(movie.vote_average||0).toFixed(1)}/10</p>
+    </div>
+   </div>
+  `;
+ }).join("");
+}
+
+/* SEARCH */
+let searchTimeout;
+function searchMovies(){
+ clearTimeout(searchTimeout);
+ searchTimeout=setTimeout(async()=>{
+  const query=document.getElementById("searchInput").value.trim();
+  if(!query){
+   displayMovies(currentMovies,currentType);
+   return;
+  }
+
+  const grid=document.getElementById("movieGrid");
+  grid.innerHTML='<div class="loading">Searching...</div>';
+
+  try{
+   const data=await api("/search/multi?query="+encodeURIComponent(query)+"&include_adult=false&language=en-US&page=1");
+   const results=(data.results||[]).filter(item=>
+    item.media_type==="movie"||item.media_type==="tv"
+   );
+   grid.innerHTML=results.map(movie=>{
+    const type=movie.media_type;
+    const name=movie.title||movie.name||"Untitled";
+    const date=movie.release_date||movie.first_air_date||"";
+    return `
+     <div class="movie-card" onclick="openDetails(${Number(movie.id)},'${type}')">
+      <img src="${poster(movie.poster_path)}" alt="${escapeHTML(name)}" loading="lazy">
+      <div class="movie-info">
+       <h3>${escapeHTML(name)}</h3>
+       <p>${date?date.slice(0,4):"N/A"}</p>
+       <p class="rating">⭐ ${Number(movie.vote_average||0).toFixed(1)}/10</p>
+      </div>
+     </div>
+    `;
+   }).join("")||'<p class="empty">No results found.</p>';
+  }catch(error){
+   grid.innerHTML='<p class="empty">Search failed. Try again.</p>';
+  }
+ },350);
+}
+
+/* MOVIE DETAILS */
+async function openDetails(id,type){
+ const modal=document.getElementById("detailsModal");
+ const body=document.getElementById("detailsBody");
+ modal.classList.add("show");
+ body.innerHTML='<div class="loading">Loading details...</div>';
+
+ try{
+  const movie=await api("/"+type+"/"+id+"?language=en-US");
+  const title=movie.title||movie.name||"Untitled";
+  const date=movie.release_date||movie.first_air_date||"N/A";
+  const genres=(movie.genres||[]).map(g=>g.name).join(", ")||"N/A";
+
+  body.innerHTML=`
+   <img src="${poster(movie.poster_path)}" alt="${escapeHTML(title)}">
+   <h2>${escapeHTML(title)}</h2>
+   <p><b>Release:</b> ${escapeHTML(date)}</p>
+   <p><b>Rating:</b> ⭐ ${Number(movie.vote_average||0).toFixed(1)}/10</p>
+   <p><b>Genres:</b> ${escapeHTML(genres)}</p>
+   <p><b>Overview:</b> ${escapeHTML(movie.overview||"No description available.")}</p>
+   <div style="clear:both"></div>
+   <div class="detail-actions">
+    <button onclick="watchTrailer(${Number(id)},'${type}')">▶ WATCH TRAILER</button>
+    <button class="secondary" onclick="closeDetails()">CLOSE</button>
+   </div>
+  `;
+ }catch(error){
+  body.innerHTML='<p class="empty">Could not load movie details.</p>';
+ }
+}
+
+function closeDetails(){
+ document.getElementById("detailsModal").classList.remove("show");
+}
+function modalBackgroundClose(event){
+ if(event.target.id==="detailsModal")closeDetails();
+}
+
+/* TRAILER */
+async function watchTrailer(id,type){
+ try{
+  const data=await api("/"+type+"/"+id+"/videos?language=en-US");
+  const videos=data.results||[];
+  const trailer=videos.find(v=>
+   v.site==="YouTube"&&(v.type==="Trailer"||v.type==="Teaser")
+  );
+  if(trailer){
+   window.open("https://www.youtube.com/watch?v="+trailer.key,"_blank");
+  }else{
+   const title=document.querySelector("#detailsBody h2")?.textContent||"movie";
+   window.open("https://www.youtube.com/results?search_query="+
+    encodeURIComponent(title+" official trailer"),"_blank");
+  }
+ }catch(error){
+  const title=document.querySelector("#detailsBody h2")?.textContent||"movie";
+  window.open("https://www.youtube.com/results?search_query="+
+   encodeURIComponent(title+" official trailer"),"_blank");
+ }
+}
+
+/* TRENDING */
+async function loadTrending(){
+ const box=document.getElementById("trendBox");
+ try{
+  const data=await api("/trending/movie/week?language=en-US");
+  trendMovies=(data.results||[]).slice(0,3);
+  if(!trendMovies.length){
+   box.innerHTML='<p class="empty">No trending movies available.</p>';
+   return;
+  }
+  showTrending();
+  if(trendTimer)clearInterval(trendTimer);
+  if(trendMovies.length>1){
+   trendTimer=setInterval(()=>{
+    trendIndex=(trendIndex+1)%trendMovies.length;
+    showTrending();
+   },1000);
+  }
+ }catch(error){
+  box.innerHTML='<p class="empty">Trending movies failed to load.</p>';
+ }
+}
+
+function showTrending(){
+ const box=document.getElementById("trendBox");
+ box.innerHTML=trendMovies.map((movie,index)=>{
+  const title=movie.title||"Movie";
+  return `
+   <div class="trend-slide ${index===trendIndex?"active":""}"
+    style="background-image:url('${poster(movie.backdrop_path||movie.poster_path)}')">
+    <div class="trend-overlay"></div>
+    <div class="trend-content">
+     <h3>${escapeHTML(title)}</h3>
+     <p>⭐ ${Number(movie.vote_average||0).toFixed(1)}/10</p>
+     <button onclick="openTrendingDetails(${Number(movie.id)})">VIEW DETAILS</button>
+    </div>
+   </div>
+  `;
+ }).join("");
+}
+
+function openTrendingDetails(id){
+ openDetails(id,"movie");
+}
+
+/* PAGE SECTIONS */
+function showSection(section,button){
+ document.getElementById("moviesSection").classList.toggle("hidden",section!=="movies");
+ document.getElementById("liveSection").classList.toggle("hidden",section!=="live");
+ document.querySelectorAll("nav button").forEach(btn=>btn.classList.remove("active"));
+ if(button)button.classList.add("active");
+}
+
+/* LIVE TV */
+function logoFallback(img){
+ img.style.display="none";
+ const fallback=img.nextElementSibling;
+ if(fallback)fallback.style.display="grid";
+}
+
+const liveChannels={
+ aljazeera:{
+  name:"AL JAZEERA",
+  embed:"https://www.youtube-nocookie.com/embed/live_stream?channel=UCNye-wNBqNL5ZzHSJj3l8Bg",
+  official:"https://www.aljazeera.com/video/live/"
+ },
+ tbc:{
+  name:"TBC TANZANIA",
+  official:"https://www.tbc.go.tz/player.html"
+ },
+ france24:{
+  name:"FRANCE 24",
+  embed:"https://www.youtube-nocookie.com/embed/live_stream?channel=UCCCPCZNChQdGa9EkATeye4g",
+  official:"https://www.france24.com/en/live"
+ },
+ dw:{
+  name:"DW NEWS",
+  embed:"https://www.youtube-nocookie.com/embed/live_stream?channel=UCknLrEdhRCp1aegoMqRaCZg",
+  official:"https://www.dw.com/en/live-tv"
+ }
+};
+
+function playLive(channel,button){
+ const item=liveChannels[channel];
+ if(!item)return;
+
+ document.querySelectorAll(".live-card").forEach(card=>card.classList.remove("selected"));
+ if(button)button.classList.add("selected");
+
+ const player=document.getElementById("livePlayer");
+
+ if(item.embed){
+  player.innerHTML=`
+   <h3 style="margin-bottom:10px">${item.name} LIVE</h3>
+   <iframe src="${item.embed}"
+    title="${item.name} live stream"
+    allow="autoplay; encrypted-media; picture-in-picture"
+    allowfullscreen></iframe>
+   <p>If the stream does not play, use the official channel website.</p>
+   <a href="${item.official}" target="_blank" rel="noopener">OPEN OFFICIAL ${item.name} ↗</a>
+  `;
+ }else{
+  player.innerHTML=`
+   <h3>${item.name}</h3>
+   <p>This channel opens through its official player.</p>
+   <a href="${item.official}" target="_blank" rel="noopener">
+    OPEN ${item.name} OFFICIAL PLAYER ↗
+   </a>
+  `;
+  window.open(item.official,"_blank");
+ }
+}
+
+/* INITIAL LOAD */
+loadCategory("popular","movie");
+loadTrending();
+</script>
+
+</body>
+</html>
